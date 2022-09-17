@@ -1,33 +1,81 @@
-const start = document.querySelector("#start");
-const output = document.querySelector("#output");
+// Getting the button to js
+const start = document.getElementById("start");
 
+const output = document.getElementById("output");
+
+// Listening for any clicks on the submit button
 start.addEventListener("click", function() {
 
-    // Gets the value from input
-    let value = document.querySelector("#size").value;
+    // Getting updates on the checkmarks whenever button is pressed
+    const lettersElement = document.getElementById("letter");
+    const numbersElement = document.getElementById("number");
+    const symbolsElement = document.getElementById("character");
+    const uppercaseElement = document.getElementById("caps");
 
-    // Default value
-    let size = 8;
+    const maxSize = document.getElementById("size").value;
 
-    // String that holds output from for
-    let number = ''
+    const lettersIncluded = lettersElement.checked;
+    const numbersIncluded = numbersElement.checked;
+    const symbolsIncluded = symbolsElement.checked;
+    const uppercaseIncluded = uppercaseElement.checked;
+    
+    const password = setPassword(lettersIncluded, numbersIncluded, uppercaseIncluded, symbolsIncluded, maxSize);
 
-    // Base condition to check if variable value has value
-    if(value > 0 && value < 19 && value != null) {
-        size = value;
-    } else {
-        size = 8;
-    };
+    output.textContent = password
+    }
+)
 
-    // For to randomize and fill-in the string
-    for(i = 1; i <= size; i++) {
-        number += Math.round(Math.random() * 9)
+// Where passwords need to be made
+function setPassword(letterIncluded, numbersIncluded, uppercaseIncluded, symbolsIncluded, maxSize) {
+    
+    let count = 0
+
+    let array = [];
+
+    let makePassword = 'Please select at least 1 checkbox';
+
+    if (letterIncluded) {
+        const letter = setLowtoHigh(97, 122)
+        array = array.concat(letter)
+        count += 1
+    }
+    
+    if (numbersIncluded) {
+        const number = setLowtoHigh(48, 57);
+        array = array.concat(number)
+        count += 1
+    }
+    
+    if (uppercaseIncluded) {
+        const uppercase = setLowtoHigh(65, 90);
+        array = array.concat(uppercase)
+        count += 1
+    }
+    
+    if (symbolsIncluded) {
+        const symbols = setLowtoHigh(33, 47).concat(setLowtoHigh(58, 64)).concat(setLowtoHigh(91, 96)).concat(setLowtoHigh(123, 126));
+        array = array.concat(symbols)
+        count += 1
     }
 
-    // Adds to the p element the results
-    return output.textContent = number;
-})
+    if (count > 0) {
+        let arraySize = array.length;
 
-// TODO:
-// Use arrays instead of Math.random()
-// - Allow for both capslock AND special characters within said arrays
+        makePassword = ''
+        
+        for (j=1; j<=maxSize; j++) {
+            makePassword += array[Math.round(Math.random() * (arraySize - 1))]
+        }
+    }
+    return makePassword
+}
+
+// Does all the arrays for free
+function setLowtoHigh(low, high) {
+    let array = [];
+    for (i=low;i<high;i++) {
+        array.push(String.fromCharCode(i))
+    }
+    return array
+}
+
